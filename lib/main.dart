@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:madrasati_plus/pages/account_type.dart';
-import 'package:madrasati_plus/pages/homepage.dart';
-import 'package:madrasati_plus/pages/login.dart';
+import 'package:madrasati_plus/pages/homepage/homepage.dart';
+import 'package:madrasati_plus/pages/homepage/registration/registration.dart';
+import 'package:madrasati_plus/pages/login2.dart';
 import 'package:madrasati_plus/pages/looking_for_school.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:madrasati_plus/pages/schoollist.dart';
-import 'package:madrasati_plus/pages/sign_up.dart';
+import 'package:madrasati_plus/pages/signup2.dart';
 import 'package:madrasati_plus/pages/usemycurrentlocation.dart';
+import 'package:madrasati_plus/pages/welcome.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -27,16 +27,16 @@ class Home extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       routes: {
-        "login": (context) => Login(),
-        "account_type": (context) => AccountType(),
-        "homepage": (context) => Homepage(),
+        "login": (context) => LoginScreen(),
+        "welcome": (context) => WelcomeScreen(),
+        "homepage": (context) => HomePage(),
         "looking_for_school": (context) => LookingForSchool(),
-        "signup": (context) => signup(),
+        "signup": (context) => SignupScreen(),
         "mylocation": (context) => currentlocation(),
-        "schoolslist": (context) => schoolslist(),
+        "registration" :(context) =>RegisterStep1Page()
       },
 
-      initialRoute: "account_type",
+      initialRoute: "welcome",
     );
   }
 }
