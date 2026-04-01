@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:madrasati_plus/helper/gap.dart';
+import 'package:madrasati_plus/pages/registration/progressbar.dart';
 
 class RegisterStep1Page extends StatefulWidget {
   const RegisterStep1Page({Key? key}) : super(key: key);
@@ -53,10 +54,21 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
           child: Column(
             children: [
               const SizedBox(height: 16),
-              _ProgressBar(currentStep: currentStep),
+                Row(
+                  children: [
+                    gap(width: 20,),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(Icons.arrow_back_ios, size: 20),
+                    ),
+                    const Text('تسجيل الطالب',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+
               const SizedBox(height: 16),
-              const Text('تسجيل الطالب',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+               RegistrationProgressBar(currentStep: currentStep),
+
               const SizedBox(height: 16),
               Expanded(
                 child: SingleChildScrollView(
@@ -166,6 +178,7 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                                   alignment: Alignment.topLeft,
                                   width: 300,
                                   child: DropdownButtonFormField<String>(
+                                    initialValue: gender,
                                     alignment: Alignment.centerLeft,
                                     decoration: InputDecoration(
                                       
@@ -192,7 +205,9 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                                 Container(
                                   width: 340,
                                   child: DropdownButtonFormField<String>(
+                                    initialValue: grade,
                                     isExpanded: true,
+
                                     decoration: _fieldDecoration(' '),
                                     items: const [
                                       DropdownMenuItem(value: 'الأول', child: Text('الأول')),
@@ -265,7 +280,7 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () { Navigator.pushNamed(context, "step2");},
                           child: const Text('التالي',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white)),
@@ -335,78 +350,3 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
 }
 
 // ======= Reusable Progress Bar with colored segments =======
-class _ProgressBar extends StatelessWidget {
-  final int currentStep;
-  const _ProgressBar({required this.currentStep});
-
-  @override
-  Widget build(BuildContext context) {
-    const blue = Color(0xFF2A3F6F);
-    final gray = Colors.grey.shade300;
-    const steps = ['بيانات الطفل', 'المستندات', 'المدرسة', 'المراجعة', 'التأكيد'];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 40,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Row(
-                  children: List.generate(steps.length - 1, (i) {
-                    final active = i < currentStep - 1;
-                    return Expanded(
-                      child: Container(height: 2, color: active ? blue : gray),
-                    );
-                  }),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(steps.length, (i) {
-                    final active = i == currentStep - 1;
-                    return Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: active ? blue : Colors.white,
-                        border: Border.all(
-                            color: active ? blue : Colors.grey.shade400, width: 2),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${i + 1}',
-                          style: TextStyle(
-                            color: active ? Colors.white : Colors.black87,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 6),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(steps.length, (i) {
-              final active = i == currentStep - 1;
-              return Text(
-                steps[i],
-                style: TextStyle(
-                  fontSize: 12,
-                  color: active ? blue : Colors.grey.shade500,
-                  fontWeight: active ? FontWeight.bold : FontWeight.normal,
-                ),
-              );
-            }),
-          ),
-        ],
-      ),
-    );
-  }
-}

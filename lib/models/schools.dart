@@ -2,13 +2,13 @@ class Schoolmodel {
   final String title;
   final double latitude;
   final double longitude;
-  final String? address;
+  final String address;
 
   Schoolmodel({
     required this.title,
     required this.latitude,
     required this.longitude,
-    this.address,
+   required this.address,
   });
 
   // Factory constructor to create a School from a JSON map
