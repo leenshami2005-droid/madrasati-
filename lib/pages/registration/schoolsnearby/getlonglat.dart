@@ -3,44 +3,27 @@ import 'package:geolocator/geolocator.dart';
  class mylocation {
   double mylat=0.0;
   double mylong=0.0;
- getcurrentlocation() async{
+static Future<Position?> getCurrentPosition() async {
+  bool serviceEnabled;
+  LocationPermission permission;
 
-bool serviceenabled;
-LocationPermission? permission;
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    return null;
+  }
 
-serviceenabled =await Geolocator.isLocationServiceEnabled();
-permission = await Geolocator.checkPermission();
-    if (serviceenabled == true) {
-      print("true");
-    } else {
-      return ("please turn ur location on");
-    }
-
-    print(permission);
-
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
+      return null;
     }
+  }
 
-    if (permission == LocationPermission.deniedForever) {
-      print("location permission is denied");
-    }
-    if (permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse) {
-      Position position = await Geolocator.getCurrentPosition();
+  if (permission == LocationPermission.deniedForever) {
+    return null;
+  }
 
-      mylat = position.latitude;
-      mylong = position.longitude;
-
-
-
-
-    }    
-    
-
+  return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 }
-double? getmylat(){
-  return mylat;}
-  double? getmylong(){
-    return mylong;}
 }

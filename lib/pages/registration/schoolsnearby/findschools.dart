@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:madrasati_plus/colors.dart';
 import 'package:madrasati_plus/helper/gap.dart';
 import 'package:madrasati_plus/models/schools.dart';
-import 'package:madrasati_plus/pages/looking_for_school.dart';
 import 'package:madrasati_plus/pages/registration/progressbar.dart';
 import 'package:madrasati_plus/pages/registration/schoolsnearby/getlonglat.dart';
 import 'package:madrasati_plus/pages/registration/schoolsnearby/schoolcard.dart';
 import 'package:madrasati_plus/pages/registration/schoolsnearby/schoolsnearby.dart';
-              List<Schoolmodel> nearbylist =[];
-              int length = nearbylist.length;
+
 class findschools extends StatefulWidget {
 
    findschools({super.key});
@@ -18,12 +17,21 @@ class findschools extends StatefulWidget {
 }
 
 class _findschoolsState extends State<findschools> {
-  mylocation mylocation1 = mylocation();
+  Position? userPosition;
 
   @override
   void initState() {
-    mylocation1.getcurrentlocation();
     super.initState();
+    _getLocation();
+  }
+
+  Future<void> _getLocation() async {
+    Position? position = await mylocation.getCurrentPosition();
+    if (mounted) {
+      setState(() {
+        userPosition = position;
+      });
+    }
   }
   
   Widget build(BuildContext context) {
@@ -58,20 +66,67 @@ class _findschoolsState extends State<findschools> {
 
             
             gap(height: 20),
-            ListView.builder(itemBuilder: (context, index) {
-              nearschools nearschools1 = nearschools();
+            Expanded(
+              child: userPosition != null 
+                ? nearschools(
+                    userLat: userPosition!.latitude, 
+                    userLong: userPosition!.longitude
+                  )
+                : const Center(child: CircularProgressIndicator()),
+            ),
 
-               if(Geolocator.distanceBetween(mylocation().mylong, mylocation().mylat,schoolslist[index].longitude, schoolslist[index].latitude) <300){
-nearbylist.add(schoolslist[index]);
-                  return Container(
-             width: 200,height: 70,
-               child: nearschools1,
-                      );
-               }
+        gap(height: 20,),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
 
-          
-            }, itemCount: length, shrinkWrap: true,),
-
+                            Container(
+                              width: 93,
+                              height: 40,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: blue,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  'رجوع',
+                                  style: TextStyle(fontSize: 16, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            gap(width: 15,),
+                            Container(
+                              width: 210,
+                              height: 40,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  
+                                  backgroundColor: blue,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pushReplacementNamed(context, 'confirm');
+                                },
+                                child: const Text(
+                                  'التالي',
+                                  style: TextStyle(fontSize: 16, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+gap(height: 30,)
           ],
         
           

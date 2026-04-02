@@ -14,11 +14,11 @@ class Schoolmodel {
   // Factory constructor to create a School from a JSON map
   factory Schoolmodel.fromJson(json) {
     return Schoolmodel(
-      title: json['title'],
+      title: json['title'] ?? '',
       // Accessing nested gps_coordinates from your search results
       latitude: json['latitude']?.toDouble() ?? 0.0,
       longitude: json['longitude']?.toDouble() ?? 0.0,
-      address: json['adress'],
+      address: json['address'] ?? '',
     );
   }
 }
