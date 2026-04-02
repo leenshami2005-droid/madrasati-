@@ -3,12 +3,20 @@ import 'package:flutter_svg/svg.dart';
 import 'package:madrasati_plus/pages/navigationbar.dart';
 import 'package:madrasati_plus/pages/registration/progressbar.dart';
 import 'package:madrasati_plus/pages/registration/registrationstep5.dart';
+import 'package:madrasati_plus/state/registration_draft.dart';
 
 class Confirm extends StatelessWidget {
   const Confirm({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final draft = RegistrationDraft.instance;
+    final schoolTitle =
+        draft.selectedSchoolName?.trim().isNotEmpty == true ? draft.selectedSchoolName! : '—';
+    final schoolAddrLine = draft.selectedSchoolAddress?.trim().isNotEmpty == true
+        ? draft.selectedSchoolAddress!
+        : '—';
+
     return Scaffold(
       
       body: Directionality(
@@ -48,29 +56,21 @@ class Confirm extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'المدرسة القريبة',
-                                style: TextStyle(
+                              Text(
+                                schoolTitle,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              const Text(
-                                'مدرسة الأمير راشد بن حسين',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 6),
                               Text(
-                                'المنطقة: حي ... • الشارع: ...',
+                                schoolAddrLine,
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.85),
-                                  fontSize: 13,
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],
@@ -84,7 +84,6 @@ class Confirm extends StatelessWidget {
 
                 const SizedBox(height: 18),
 
-                // ===== Child Data =====
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
@@ -105,16 +104,24 @@ class Confirm extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      _KeyValueRow(label: 'الاسم', value: 'خليل محمد عبدالله'),
-                      _KeyValueRow(label: 'الرقم الوطني', value: '9912034871'),
-                      _KeyValueRow(label: 'تاريخ الميلاد', value: '12/03/2019'),
-                      _KeyValueRow(label: 'الجنس', value: 'ذكر'),
-                      _KeyValueRow(label: 'الصف', value: 'السابع'),
-                      _KeyValueRow(label: 'المدرسة', value: 'المدرسة القريبة'),
-                      _KeyValueRow(label: 'الأب', value: 'أحمد عطاع محمد'),
+                      _KeyValueRow(label: 'الاسم', value: draft.childName?.isNotEmpty == true ? draft.childName! : '—'),
+                      _KeyValueRow(label: 'الرقم الوطني', value: draft.nationalId?.isNotEmpty == true ? draft.nationalId! : '—'),
+                      _KeyValueRow(label: 'تاريخ الميلاد', value: draft.birthDateText.isNotEmpty ? draft.birthDateText : '—'),
+                      _KeyValueRow(label: 'الجنس', value: (draft.gender?.isNotEmpty == true) ? draft.gender! : '—'),
+                      _KeyValueRow(label: 'الصف', value: (draft.grade?.isNotEmpty == true) ? draft.grade! : '—'),
+                      _KeyValueRow(label: 'المدرسة', value: schoolTitle),
+                      _KeyValueRow(label: 'الأب', value: draft.fatherNameFromNameParts),
                       _KeyValueRow(
                         label: 'العنوان',
-                        value: 'لا يوجد',
+                        value: schoolTitle,
+                      ),
+                      _KeyValueRow(
+                        label: 'منقول',
+                        value: draft.transferred == null ? '—' : (draft.transferred! ? 'نعم' : 'لا'),
+                      ),
+                      _KeyValueRow(
+                        label: 'احتياجات خاصة',
+                        value: draft.specialNeeds == null ? '—' : (draft.specialNeeds! ? 'نعم' : 'لا'),
                       ),
                     ],
                   ),
@@ -122,7 +129,6 @@ class Confirm extends StatelessWidget {
 
                 const SizedBox(height: 18),
 
-                // ===== Files Uploaded =====
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
@@ -144,14 +150,22 @@ class Confirm extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       _FilePill(
-                        title: 'PDF - 1,3 MB',
+                        title: draft.birthCertificateFileLine ?? '—',
                         subtitle: 'شهادة الميلاد',
                       ),
                       const SizedBox(height: 10),
                       _FilePill(
-                        title: 'JPG - 1,4 MB',
-                        subtitle: 'صورة الهوية',
+                        title: draft.vaccinationRecordFileLine ?? '—',
+                        subtitle: 'سجل التطعيم',
                       ),
+                      if (draft.transferCertificateFileLine != null &&
+                          draft.transferCertificateFileLine!.trim().isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        _FilePill(
+                          title: draft.transferCertificateFileLine!,
+                          subtitle: 'شهادة نقل',
+                        ),
+                      ],
 
                       const SizedBox(height: 12),
                       Text(
@@ -168,7 +182,6 @@ class Confirm extends StatelessWidget {
 
                 const SizedBox(height: 18),
 
-                // ===== Buttons =====
                 Row(
                   children: [
                     Expanded(

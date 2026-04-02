@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:madrasati_plus/helper/gap.dart';
 import 'package:madrasati_plus/pages/registration/progressbar.dart';
 import 'package:madrasati_plus/pages/navigationbar.dart';
+import 'package:madrasati_plus/state/registration_draft.dart';
 
 class RegisterStep1Page extends StatefulWidget {
   const RegisterStep1Page({Key? key}) : super(key: key);
@@ -281,7 +282,18 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          onPressed: () { Navigator.pushNamed(context, "step2");},
+                          onPressed: () {
+                            final draft = RegistrationDraft.instance;
+                            draft.childName = nameController.text.trim();
+                            draft.nationalId = idController.text.trim();
+                            draft.birthDate = birthDate;
+                            draft.gender = gender;
+                            draft.grade = grade;
+                            draft.transferred = transferred;
+                            draft.specialNeeds = specialNeeds;
+
+                            Navigator.pushNamed(context, "step2");
+                          },
                           child: const Text('التالي',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.white)),

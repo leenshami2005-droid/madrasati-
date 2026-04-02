@@ -8,6 +8,7 @@ import 'package:madrasati_plus/pages/registration/schoolsnearby/getlonglat.dart'
 import 'package:madrasati_plus/pages/registration/schoolsnearby/schoolcard.dart';
 import 'package:madrasati_plus/pages/registration/schoolsnearby/schoolsnearby.dart';
 import 'package:madrasati_plus/pages/navigationbar.dart';
+import 'package:madrasati_plus/state/registration_draft.dart';
 
 class findschools extends StatefulWidget {
 
@@ -116,6 +117,18 @@ class _findschoolsState extends State<findschools> {
                                   ),
                                 ),
                                 onPressed: () {
+                                  final d = RegistrationDraft.instance;
+                                  if (d.selectedSchoolName == null ||
+                                      d.selectedSchoolName!.trim().isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'يرجى اختيار مدرسة من القائمة',
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
                                   Navigator.pushReplacementNamed(context, 'confirm');
                                 },
                                 child: const Text(

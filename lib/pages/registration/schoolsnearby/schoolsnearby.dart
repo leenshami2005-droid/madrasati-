@@ -36,9 +36,10 @@ double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
                         }
                         return ListView.builder(
                           itemBuilder: (context, index) {
+                            final school = schoolslist[index];
                             return Schoolslistcard(
-                              schoolname: schoolslist[index].title,
-                              schoollocation: schoolslist[index].address,
+                              schoolname: school.title,
+                              schoollocation: school.address,
                             );
                           },
                           itemCount: schoolslist.length,
