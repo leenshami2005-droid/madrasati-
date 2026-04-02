@@ -21,14 +21,6 @@ class CustomBottomNavBar extends StatelessWidget {
       'assets/imgs/navigation/profile.svg',
     ];
 
-    final List<String> labels = [
-      'الرئيسية',
-      'الخدمات',
-      'التسجيل',
-      'إبني',
-      'الملف الشخصي',
-    ];
-
     // Rounded floating bottom bar like the provided screenshot.
     return SafeArea(
       child: Padding(
@@ -53,7 +45,6 @@ class CustomBottomNavBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(5, (index) => _NavItem(
               iconPath: icons[index],
-              label: labels[index],
               isActive: currentIndex == index,
               onTap: () => onTap(index),
             )),
@@ -66,13 +57,11 @@ class CustomBottomNavBar extends StatelessWidget {
 
 class _NavItem extends StatelessWidget {
   final String iconPath;
-  final String label;
   final bool isActive;
   final VoidCallback onTap;
 
   const _NavItem({
     required this.iconPath,
-    required this.label,
     required this.isActive,
     required this.onTap,
   });
@@ -83,27 +72,17 @@ class _NavItem extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SvgPicture.asset(
               iconPath,
-              width: 28,
-              height: 28,
+              width: 34,
+              height: 34,
               colorFilter: isActive
-                  ? const ColorFilter.mode(Color(0xff007ACC), BlendMode.srcIn)
+                  ? const ColorFilter.mode(Color(0xFF2A3F6F), BlendMode.srcIn)
                   : const ColorFilter.mode(Color(0xffC1C1C1), BlendMode.srcIn),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                color: isActive ? const Color(0xff007ACC) : const Color(0xffC1C1C1),
-              ),
-              textDirection: TextDirection.rtl,
             ),
           ],
         ),
