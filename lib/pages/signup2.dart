@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:madrasati_plus/helper/snackbar.dart';
+import 'package:madrasati_plus/pages/navigationbar.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -128,6 +129,28 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Center(child: Text("مقعدك", style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold))),
           ),
         ],
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: 4, // الملف الشخصي
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, 'homepage');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, 'findschool');
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, 'registration');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, 'step2');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, 'welcome');
+              break;
+          }
+        },
       ),
     );
   }

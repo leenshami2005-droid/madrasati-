@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:madrasati_plus/helper/gap.dart';
+import 'package:madrasati_plus/pages/navigationbar.dart';
 import 'package:madrasati_plus/pages/homepage/absence_card.dart';
 import 'package:madrasati_plus/pages/homepage/registrationcard.dart';
 
@@ -250,33 +251,27 @@ CollectionReference student =FirebaseFirestore.instance.collection("students");
             ),
           ),
         
-          // Bottom Navigation Bar
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
-            currentIndex: 3,
-            items:  [
-
-             
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
-                label: 'المفضلة',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                label: 'الإعدادات',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.phone),
-              
-              label: 'الملف الشخصي',
-
-              ), BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-               label: 'الرئيسية',
-
-              ),
-            ],
+          bottomNavigationBar: CustomBottomNavBar(
+            currentIndex: 0, // الرئيسية
+            onTap: (index) {
+              switch (index) {
+                case 0:
+                  Navigator.pushReplacementNamed(context, 'homepage');
+                  break;
+                case 1:
+                  Navigator.pushReplacementNamed(context, 'findschool');
+                  break;
+                case 2:
+                  Navigator.pushReplacementNamed(context, 'registration');
+                  break;
+                case 3:
+                  Navigator.pushReplacementNamed(context, 'step2');
+                  break;
+                case 4:
+                  Navigator.pushReplacementNamed(context, 'welcome');
+                  break;
+              }
+            },
           ),
         );
       }

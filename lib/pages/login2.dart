@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:madrasati_plus/helper/snackbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:madrasati_plus/pages/navigationbar.dart';
 String id= "";
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -107,6 +108,28 @@ class _LoginScreenState extends State<LoginScreen> {
               child: SvgPicture.asset("assets/imgs/maqaddaklogo.svg" ,)),
           ),
         ],
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: 4, // الملف الشخصي
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, 'homepage');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, 'findschool');
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, 'registration');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, 'step2');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, 'welcome');
+              break;
+          }
+        },
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:madrasati_plus/colors.dart';
 import 'package:madrasati_plus/helper/gap.dart';
 import 'package:madrasati_plus/pages/registration/progressbar.dart';
+import 'package:madrasati_plus/pages/navigationbar.dart';
 
 class Registrationstep2 extends StatefulWidget {
   const Registrationstep2({Key? key}) : super(key: key);
@@ -137,6 +138,28 @@ class _Registrationstep2State extends State<Registrationstep2> {
               ),
             ],
           ),
+        ),
+        bottomNavigationBar: CustomBottomNavBar(
+          currentIndex: 3, // step2 tab
+          onTap: (index) {
+            switch (index) {
+              case 0:
+                Navigator.pushReplacementNamed(context, 'homepage');
+                break;
+              case 1:
+                Navigator.pushReplacementNamed(context, 'findschool');
+                break;
+              case 2:
+                Navigator.pushReplacementNamed(context, 'registration');
+                break;
+              case 3:
+                Navigator.pushReplacementNamed(context, 'step2');
+                break;
+              case 4:
+                Navigator.pushReplacementNamed(context, 'welcome');
+                break;
+            }
+          },
         ),
       ),
     );

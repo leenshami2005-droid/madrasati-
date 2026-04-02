@@ -7,6 +7,7 @@ import 'package:madrasati_plus/pages/registration/progressbar.dart';
 import 'package:madrasati_plus/pages/registration/schoolsnearby/getlonglat.dart';
 import 'package:madrasati_plus/pages/registration/schoolsnearby/schoolcard.dart';
 import 'package:madrasati_plus/pages/registration/schoolsnearby/schoolsnearby.dart';
+import 'package:madrasati_plus/pages/navigationbar.dart';
 
 class findschools extends StatefulWidget {
 
@@ -133,6 +134,28 @@ gap(height: 30,)
         ),
       ),
         
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: 1, // الخدمات
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, 'homepage');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, 'findschool');
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, 'registration');
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, 'step2');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, 'welcome');
+              break;
+          }
+        },
       ),
     );
   }
