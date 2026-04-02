@@ -29,28 +29,35 @@ class CustomBottomNavBar extends StatelessWidget {
       'الملف الشخصي',
     ];
 
+    // Rounded floating bottom bar like the provided screenshot.
     return SafeArea(
-      child: Container(
-        height: 80,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 10,
-              offset: Offset(0, -2),
-            ),
-          ],
-        ),
-        child: Row(
-          textDirection: TextDirection.rtl,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(5, (index) => _NavItem(
-            iconPath: icons[index],
-            label: labels[index],
-            isActive: currentIndex == index,
-            onTap: () => onTap(index),
-          )),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
+        child: Container(
+          height: 74,
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: const Color(0xFFE8E8E8)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            textDirection: TextDirection.rtl,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(5, (index) => _NavItem(
+              iconPath: icons[index],
+              label: labels[index],
+              isActive: currentIndex == index,
+              onTap: () => onTap(index),
+            )),
+          ),
         ),
       ),
     );
