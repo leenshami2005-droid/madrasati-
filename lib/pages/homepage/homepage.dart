@@ -265,7 +265,7 @@ CollectionReference student =FirebaseFirestore.instance.collection("students");
                   Navigator.pushReplacementNamed(context, 'registration');
                   break;
                 case 3:
-                  Navigator.pushReplacementNamed(context, 'step2');
+                  Navigator.pushReplacementNamed(context, 'mychild');
                   break;
                 case 4:
                   Navigator.pushReplacementNamed(context, 'welcome');

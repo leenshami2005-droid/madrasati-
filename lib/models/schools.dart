@@ -11,14 +11,18 @@ class Schoolmodel {
    required this.address,
   });
 
-  // Factory constructor to create a School from a JSON map
-  factory Schoolmodel.fromJson(json) {
+  factory Schoolmodel.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic v) {
+      if (v is num) return v.toDouble();
+      if (v is String) return double.tryParse(v) ?? 0.0;
+      return 0.0;
+    }
+
     return Schoolmodel(
-      title: json['title'] ?? '',
-      // Accessing nested gps_coordinates from your search results
-      latitude: json['latitude']?.toDouble() ?? 0.0,
-      longitude: json['longitude']?.toDouble() ?? 0.0,
-      address: json['address'] ?? '',
+      title: json['title']?.toString() ?? '',
+      latitude: toDouble(json['latitude']),
+      longitude: toDouble(json['longitude']),
+      address: json['address']?.toString() ?? '',
     );
   }
 }
