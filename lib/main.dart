@@ -7,6 +7,7 @@ import 'package:madrasati_plus/pages/registration/registrationStep2.dart';
 import 'package:madrasati_plus/pages/registration/registrationstep1.dart';
 import 'package:madrasati_plus/pages/login2.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:madrasati_plus/pages/services/services.dart';
 import 'package:madrasati_plus/pages/signup2.dart';
 import 'package:madrasati_plus/pages/welcome.dart';
 import 'package:madrasati_plus/pages/my_child/my_child_page.dart';
@@ -40,6 +41,7 @@ class Home extends StatelessWidget {
         "confirm" : (context) => Confirm(),
         "step5" : (context) => RegistrationStep5(),
         "mychild": (context) => const MyChildPage(),
+        "services": (context) => const ServicesPage(),
       },
 
       initialRoute: "homepage",

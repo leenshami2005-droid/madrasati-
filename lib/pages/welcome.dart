@@ -80,25 +80,7 @@ class WelcomeScreen extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomNavBar(
         currentIndex: 4, // الملف الشخصي
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushReplacementNamed(context, 'homepage');
-              break;
-            case 1:
-              Navigator.pushReplacementNamed(context, 'findschool');
-              break;
-            case 2:
-              Navigator.pushReplacementNamed(context, 'registration');
-              break;
-            case 3:
-              Navigator.pushReplacementNamed(context, 'step2');
-              break;
-            case 4:
-              Navigator.pushReplacementNamed(context, 'welcome');
-              break;
-          }
-        },
+        
       ),
     );
   }

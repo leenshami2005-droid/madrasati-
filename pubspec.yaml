@@ -43,8 +43,23 @@ dependencies:
   flutter_svg: ^2.0.10+1
   file_picker: ^8.1.7
   flutter_bloc: ^9.1.1
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
+  flutter_launcher_icons: "^0.14.4"
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/imgs/applogo.jpg"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+
+  web:
+    generate: true
+    image_path: "assets/imgs/applogo.jpg"
+    background_color: "0xffc1c1c1"
+    theme_color: "#0xffc1c1c1"
+
   flutter_test:
     sdk: flutter
 
@@ -70,6 +85,12 @@ flutter:
   assets:
     - assets/imgs/
     - assets/imgs/navigation/
+    - assets/imgs/services/
+    # Web: keys must not start with "assets/" or URLs become assets/assets/... (broken fetch).
+    - imgs/sched.png
+    - imgs/download.png
+
+    
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

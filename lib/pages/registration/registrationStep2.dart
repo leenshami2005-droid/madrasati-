@@ -1,8 +1,9 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:madrasati_plus/colors.dart';
 import 'package:madrasati_plus/helper/gap.dart';
 import 'package:madrasati_plus/pages/registration/progressbar.dart';
+import 'package:madrasati_plus/pages/registration/registration_header.dart';
+import 'package:madrasati_plus/pages/registration/registration_nav_buttons.dart';
 import 'package:madrasati_plus/pages/navigationbar.dart';
 import 'package:madrasati_plus/state/registration_draft.dart';
 
@@ -117,25 +118,16 @@ class _Registrationstep2State extends State<Registrationstep2> {
           child: Column(
             children: [
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  gap(width: 20),
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back_ios, size: 20),
-                  ),
-                  const Text(
-                    'تسجيل الطالب',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
+              RegistrationStepHeader(
+                onBack: () =>
+                    Navigator.pushReplacementNamed(context, 'registration'),
               ),
               const SizedBox(height: 16),
               RegistrationProgressBar(currentStep: 2, currentLineProgress: 0.25),
               const SizedBox(height: 16),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -218,55 +210,30 @@ class _Registrationstep2State extends State<Registrationstep2> {
                           fontFamily: "font2",
                         ),
                       ),
-                      const SizedBox(height: 30),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, 'findschool');
-                          },
-                          child: const Text(
-                            'التالي',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 16),
                     ],
                   ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
+                child: RegistrationNavButtons(
+                  onBack: () => Navigator.pushReplacementNamed(
+                    context,
+                    'registration',
+                  ),
+                  onNext: () => Navigator.pushReplacementNamed(
+                    context,
+                    'findschool',
+                  ),
+                  nextLabel: 'التالي',
                 ),
               ),
             ],
           ),
         ),
         bottomNavigationBar: CustomBottomNavBar(
-          currentIndex: 3, // step2 tab
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                Navigator.pushReplacementNamed(context, 'homepage');
-                break;
-              case 1:
-                Navigator.pushReplacementNamed(context, 'findschool');
-                break;
-              case 2:
-                Navigator.pushReplacementNamed(context, 'registration');
-                break;
-              case 3:
-                Navigator.pushReplacementNamed(context, 'step2');
-                break;
-              case 4:
-                Navigator.pushReplacementNamed(context, 'welcome');
-                break;
-            }
-          },
+          currentIndex: 2, // step2 tab
         ),
       ),
     );

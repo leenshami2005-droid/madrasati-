@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:madrasati_plus/colors.dart';
 import 'package:madrasati_plus/helper/gap.dart';
 import 'package:madrasati_plus/pages/navigationbar.dart';
 import 'package:madrasati_plus/pages/registration/progressbar.dart';
+import 'package:madrasati_plus/pages/registration/registration_header.dart';
+import 'package:madrasati_plus/pages/registration/registration_nav_buttons.dart';
 import 'package:madrasati_plus/pages/registration/schoolsnearby/getlonglat.dart';
 import 'package:madrasati_plus/pages/registration/schoolsnearby/schoolcard.dart';
 import 'package:madrasati_plus/schools/find_schools_cubit.dart';
@@ -38,8 +39,25 @@ class _findschoolsState extends State<findschools> {
   @override
   Widget build(BuildContext context) {
     if (userPosition == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        body: Directionality(
+          textDirection: TextDirection.rtl,
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 16),
+                RegistrationStepHeader(
+                  onBack: () =>
+                      Navigator.pushReplacementNamed(context, 'step2'),
+                ),
+                const Expanded(
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ],
+            ),
+          ),
+        ),
       );
     }
 
@@ -63,18 +81,14 @@ class _FindSchoolsScaffold extends StatelessWidget {
       body: Directionality(
         textDirection: TextDirection.rtl,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+          padding: const EdgeInsets.fromLTRB(10, 12, 10, 4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                ' تسجيل الطالب',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.right,
+              const SizedBox(height: 8),
+              RegistrationStepHeader(
+                onBack: () =>
+                    Navigator.pushReplacementNamed(context, 'step2'),
               ),
               gap(height: 10),
               const RegistrationProgressBar(currentStep: 3),
@@ -83,7 +97,7 @@ class _FindSchoolsScaffold extends StatelessWidget {
                 onChanged: (value) =>
                     context.read<FindSchoolsCubit>().updateSearchQuery(value),
                 decoration: InputDecoration(
-                  hintText: 'ابحث عن مدرستك (يبدأ الاسم بالنص — من كل المناطق)',
+                  hintText: 'ابحث عن مدرستك ',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -130,6 +144,7 @@ class _FindSchoolsScaffold extends StatelessWidget {
                     );
                   }
                   return Expanded(
+                    
                     child: Column(
                       children: [
                         if (state.isLoading)
@@ -139,10 +154,18 @@ class _FindSchoolsScaffold extends StatelessWidget {
                             itemCount: state.schools.length,
                             itemBuilder: (context, index) {
                               final school = state.schools[index];
+                              final cubit = context.read<FindSchoolsCubit>();
+                              final distanceKm = Geolocator.distanceBetween(
+                                    cubit.userLat,
+                                    cubit.userLong,
+                                    school.latitude,
+                                    school.longitude,
+                                  ) /
+                                  1000.0;
                               return Schoolslistcard(
-                                schoolname: school.title,
-                                schoollocation: school.address,
-                                onTap: () {
+                                school: school,
+                                distanceKm: distanceKm,
+                                onSelect: () {
                                   final d = RegistrationDraft.instance;
                                   d.selectedSchoolName = school.title;
                                   d.selectedSchoolAddress = school.address;
@@ -161,91 +184,37 @@ class _FindSchoolsScaffold extends StatelessWidget {
                   );
                 },
               ),
-              gap(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 93,
-                      height: 40,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text(
-                          'رجوع',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+              gap(height: 6),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: RegistrationNavButtons(
+                onBack: () =>
+                    Navigator.pushReplacementNamed(context, 'step2'),
+                onNext: () {
+                  final d = RegistrationDraft.instance;
+                  if (d.selectedSchoolName == null ||
+                      d.selectedSchoolName!.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'يرجى اختيار مدرسة من القائمة',
                         ),
                       ),
-                    ),
-                    gap(width: 15),
-                    SizedBox(
-                      width: 210,
-                      height: 40,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        onPressed: () {
-                          final d = RegistrationDraft.instance;
-                          if (d.selectedSchoolName == null ||
-                              d.selectedSchoolName!.trim().isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'يرجى اختيار مدرسة من القائمة',
-                                ),
-                              ),
-                            );
-                            return;
-                          }
-                          Navigator.pushReplacementNamed(context, 'confirm');
-                        },
-                        child: const Text(
-                          'التالي',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
+                    );
+                    return;
+                  }
+                  Navigator.pushReplacementNamed(context, 'confirm');
+                },
+                nextLabel: 'التالي',
                 ),
               ),
-              gap(height: 30),
             ],
           ),
         ),
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 1,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushReplacementNamed(context, 'homepage');
-              break;
-            case 1:
-              Navigator.pushReplacementNamed(context, 'findschool');
-              break;
-            case 2:
-              Navigator.pushReplacementNamed(context, 'registration');
-              break;
-            case 3:
-              Navigator.pushReplacementNamed(context, 'step2');
-              break;
-            case 4:
-              Navigator.pushReplacementNamed(context, 'welcome');
-              break;
-          }
-        },
+        currentIndex: 2,
+        
       ),
     );
   }

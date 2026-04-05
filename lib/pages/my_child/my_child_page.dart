@@ -1,7 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:madrasati_plus/models/students.dart';
 import 'package:madrasati_plus/pages/navigationbar.dart';
 
-/// "ابني" — teacher notes & student snapshot (layout aligned with design reference).
+/// Row: [Student] from model + parent id string read only for UI (not on [Student]).
+class _StudentUiRow {
+  _StudentUiRow({required this.student, this.parentIdForUi});
+
+  final Student student;
+  final String? parentIdForUi;
+}
+
+String? _parentIdFromFirestoreMap(Map<String, dynamic> data) {
+  final p = data['parentid'] ?? data['parentId'];
+  if (p == null) return null;
+  final s = p.toString().trim();
+  return s.isEmpty ? null : s;
+}
+
+/// "ابني" — teacher notes & student snapshot; student card from Firestore `students`.
 class MyChildPage extends StatefulWidget {
   const MyChildPage({super.key});
 
@@ -10,11 +27,48 @@ class MyChildPage extends StatefulWidget {
 }
 
 class _MyChildPageState extends State<MyChildPage> {
-  int _tabIndex = 0; // 0 = ملاحظات المعلم, 1 = الجدول الدراسي
-  String _guardianName = 'خليل العلي';
+  static List<Widget> _teacherNotesContent() => [
+        _SectionTitle(title: 'هذا الأسبوع'),
+        const SizedBox(height: 10),
+        _TeacherNoteCard(
+          teacherName: 'أ. رنا العمري',
+          teacherRole: 'معلمة اللغة الإنجليزية',
+          timeLabel: 'اليوم، 10:30',
+          body:
+              'أهلاً ولي الأمر، أود إعلامكم بأن الطالب شارك بفعالية في حصة المحادثة اليوم، ويُنصح بمراجعة مفردات الوحدة الثانية في المنزل.',
+          chip: _NoteChipStyle.alert,
+        ),
+        const SizedBox(height: 14),
+        _SectionTitle(title: 'الأسبوع الماضي'),
+        const SizedBox(height: 10),
+        _TeacherNoteCard(
+          teacherName: 'أ. محمد الدوسري',
+          teacherRole: 'معلم الرياضيات',
+          timeLabel: 'الأحد، 08:15',
+          body:
+              'أداء ممتاز في اختبار الوحدة، والطالب يظهر تطوراً ملحوظاً في حل المسائل الرياضية.',
+          chip: _NoteChipStyle.positive,
+        ),
+        const SizedBox(height: 12),
+        _TeacherNoteCard(
+          teacherName: 'أ. لينا الصالح',
+          teacherRole: 'معلمة التربية الفنية',
+          timeLabel: 'الخميس، 11:00',
+          body:
+              'تم تسليم مشروع الرسم في الموعد المحدد، شكراً للمتابعة.',
+          chip: _NoteChipStyle.neutral,
+        ),
+      ];
+
+  /// 0 = ملاحظات المعلم, 1 = الجدول الدراسي, 2 = جدول الامتحانات
+  int _tabIndex = 0;
+  int _selectedStudentIndex = 0;
 
   static const _navy = Color(0xFF233B72);
   static const _navyDeep = Color(0xFF1A2D52);
+
+  static final CollectionReference<Map<String, dynamic>> _studentsCol =
+      FirebaseFirestore.instance.collection('students');
 
   @override
   Widget build(BuildContext context) {
@@ -23,86 +77,87 @@ class _MyChildPageState extends State<MyChildPage> {
       child: Scaffold(
         backgroundColor: const Color(0xFFF7F7F9),
         body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _TopBar(
-                guardianName: _guardianName,
-                onGuardianChanged: (v) => setState(() => _guardianName = v ?? _guardianName),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _StudentHeroCard(navy: _navy, navyDeep: _navyDeep),
-                      const SizedBox(height: 16),
-                      _SegmentedTabs(
-                        selectedIndex: _tabIndex,
-                        onChanged: (i) => setState(() => _tabIndex = i),
-                      ),
-                      const SizedBox(height: 18),
-                      if (_tabIndex == 0) ...[
-                        _SectionTitle(title: 'هذا الأسبوع'),
-                        const SizedBox(height: 10),
-                        _TeacherNoteCard(
-                          teacherName: 'أ. رنا العمري',
-                          teacherRole: 'معلمة اللغة الإنجليزية',
-                          timeLabel: 'اليوم، 10:30',
-                          body:
-                              'أهلاً ولي الأمر، أود إعلامكم بأن الطالب شارك بفعالية في حصة المحادثة اليوم، ويُنصح بمراجعة مفردات الوحدة الثانية في المنزل.',
-                          chip: _NoteChipStyle.alert,
-                        ),
-                        const SizedBox(height: 14),
-                        _SectionTitle(title: 'الأسبوع الماضي'),
-                        const SizedBox(height: 10),
-                        _TeacherNoteCard(
-                          teacherName: 'أ. محمد الدوسري',
-                          teacherRole: 'معلم الرياضيات',
-                          timeLabel: 'الأحد، 08:15',
-                          body:
-                              'أداء ممتاز في اختبار الوحدة، والطالب يظهر تطوراً ملحوظاً في حل المسائل الرياضية.',
-                          chip: _NoteChipStyle.positive,
-                        ),
-                        const SizedBox(height: 12),
-                        _TeacherNoteCard(
-                          teacherName: 'أ. لينا الصالح',
-                          teacherRole: 'معلمة التربية الفنية',
-                          timeLabel: 'الخميس، 11:00',
-                          body:
-                              'تم تسليم مشروع الرسم في الموعد المحدد، شكراً للمتابعة.',
-                          chip: _NoteChipStyle.neutral,
-                        ),
-                      ] else
-                        _SchedulePlaceholder(),
-                    ],
+          child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            stream: _studentsCol.snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(
+                      'حدث خطأ في تحميل البيانات:\n${snapshot.error}',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-              ),
-            ],
+                );
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final docs = snapshot.data?.docs ?? [];
+              if (docs.isEmpty) {
+                return const Center(
+                  child: Text('لا توجد بيانات للطالب حتى الآن'),
+                );
+              }
+
+              final rows = docs.map((d) {
+                final data = d.data();
+                return _StudentUiRow(
+                  student: Student.fromJson(data),
+                  parentIdForUi: _parentIdFromFirestoreMap(data),
+                );
+              }).toList();
+
+              var index = _selectedStudentIndex;
+              if (index >= rows.length) index = 0;
+              final row = rows[index];
+              final students = rows.map((r) => r.student).toList();
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _TopBar(
+                    students: students,
+                    selectedIndex: index,
+                    onSelectStudent: (i) =>
+                        setState(() => _selectedStudentIndex = i),
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _StudentHeroCard(
+                            student: row.student,
+                            parentIdForUi: row.parentIdForUi,
+                            navy: _navy,
+                            navyDeep: _navyDeep,
+                          ),
+                          const SizedBox(height: 16),
+                          _SegmentedTabs(
+                            selectedIndex: _tabIndex,
+                            onChanged: (i) => setState(() => _tabIndex = i),
+                          ),
+                          const SizedBox(height: 18),
+                          if (_tabIndex == 0)
+                            ..._teacherNotesContent()
+                          else if (_tabIndex == 1)
+                            const _SchedulePlaceholder()
+                          else
+                            _ExamsSchedulePlaceholder(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
         bottomNavigationBar: CustomBottomNavBar(
           currentIndex: 3,
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                Navigator.pushReplacementNamed(context, 'homepage');
-                break;
-              case 1:
-                Navigator.pushReplacementNamed(context, 'findschool');
-                break;
-              case 2:
-                Navigator.pushReplacementNamed(context, 'registration');
-                break;
-              case 3:
-                break;
-              case 4:
-                Navigator.pushReplacementNamed(context, 'welcome');
-                break;
-            }
-          },
         ),
       ),
     );
@@ -113,12 +168,22 @@ class _MyChildPageState extends State<MyChildPage> {
 
 class _TopBar extends StatelessWidget {
   const _TopBar({
-    required this.guardianName,
-    required this.onGuardianChanged,
+    required this.students,
+    required this.selectedIndex,
+    required this.onSelectStudent,
   });
 
-  final String guardianName;
-  final ValueChanged<String?> onGuardianChanged;
+  final List<Student> students;
+  final int selectedIndex;
+  final ValueChanged<int> onSelectStudent;
+
+  static String _guardianLabel(Student s) {
+    final p = s.parentName?.trim();
+    if (p != null && p.isNotEmpty) return p;
+    final n = s.name?.trim();
+    if (n != null && n.isNotEmpty) return n;
+    return 'ولي الأمر';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,8 +209,8 @@ class _TopBar extends StatelessWidget {
               border: Border.all(color: const Color(0xFFE0E0E0)),
             ),
             child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: guardianName,
+              child: DropdownButton<int>(
+                value: selectedIndex.clamp(0, students.length - 1),
                 isDense: true,
                 icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
                 style: const TextStyle(
@@ -153,11 +218,16 @@ class _TopBar extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF222222),
                 ),
-                items: const [
-                  DropdownMenuItem(value: 'خليل العلي', child: Text('خليل العلي')),
-                  DropdownMenuItem(value: 'ولي أمر آخر', child: Text('ولي أمر آخر')),
+                items: [
+                  for (var i = 0; i < students.length; i++)
+                    DropdownMenuItem(
+                      value: i,
+                      child: Text(_guardianLabel(students[i])),
+                    ),
                 ],
-                onChanged: onGuardianChanged,
+                onChanged: (i) {
+                  if (i != null) onSelectStudent(i);
+                },
               ),
             ),
           ),
@@ -171,12 +241,23 @@ class _TopBar extends StatelessWidget {
 
 class _StudentHeroCard extends StatelessWidget {
   const _StudentHeroCard({
+    required this.student,
+    required this.parentIdForUi,
     required this.navy,
     required this.navyDeep,
   });
 
+  final Student student;
+  /// From Firestore `parentid` / `parentId` only — not part of [Student].
+  final String? parentIdForUi;
   final Color navy;
   final Color navyDeep;
+
+  static String _dash(String? v) {
+    if (v == null) return '—';
+    final t = v.trim();
+    return t.isEmpty ? '—' : t;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -221,9 +302,9 @@ class _StudentHeroCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'خليل محمد العلي',
-                      style: TextStyle(
+                    Text(
+                      _dash(student.name),
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
@@ -232,7 +313,7 @@ class _StudentHeroCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'مدرسة الأمير الحسن الأساسية',
+                      _dash(student.schoolName),
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.88),
                         fontSize: 13,
@@ -257,18 +338,18 @@ class _StudentHeroCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _InfoColumn(
-                  items: const [
-                    _KV('الصف والشعبة', '١ الأول — شعبة أ'),
-                    _KV('المعلم الأساسي', 'أ. سامي الخوالدة'),
+                  items: [
+                    _KV('الصف والشعبة', student.gradeSectionLabel),
+                    _KV('المعلم الأساسي', _dash(student.primaryTeacher)),
                   ],
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: _InfoColumn(
-                  items: const [
-                    _KV('رقم الطالب', 'STU-20248731'),
-                    _KV('العام الدراسي', '2024-2025'),
+                  items: [
+                    _KV('رقم الطالب', _dash(student.id)),
+                    _KV('  العام الدراسي', _dash("2025-2026")),
                   ],
                 ),
               ),
@@ -352,6 +433,13 @@ class _SegmentedTabs extends StatelessWidget {
           ),
           Expanded(
             child: _TabButton(
+              label: 'جدول الامتحانات',
+              selected: selectedIndex == 2,
+              onTap: () => onChanged(2),
+            ),
+          ),
+          Expanded(
+            child: _TabButton(
               label: 'ملاحظات المعلم',
               selected: selectedIndex == 0,
               onTap: () => onChanged(0),
@@ -383,7 +471,7 @@ class _TabButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(11),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
           decoration: BoxDecoration(
             color: selected ? Colors.white : Colors.transparent,
             borderRadius: BorderRadius.circular(11),
@@ -400,8 +488,12 @@ class _TabButton extends StatelessWidget {
           alignment: Alignment.center,
           child: Text(
             label,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 12.5,
+              height: 1.25,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
               color: selected ? const Color(0xFF1A1A1A) : const Color(0xFF6B6B6B),
             ),
@@ -412,7 +504,6 @@ class _TabButton extends StatelessWidget {
   }
 }
 
-// ——— Notes list ———
 
 class _SectionTitle extends StatelessWidget {
   const _SectionTitle({required this.title});
@@ -572,14 +663,129 @@ class _StatusChip extends StatelessWidget {
   }
 }
 
+/// Weekly schedule: asset table + حفظ with download icon (matches design reference).
 class _SchedulePlaceholder extends StatelessWidget {
+  const _SchedulePlaceholder();
+
+  static const _navy = Color(0xFF233B72);
+
+  @override
+  Widget build(BuildContext context) {
+    // ScrollView uses horizontal padding 16+16 — image needs a finite width (LayoutBuilder
+    // + Image in scrollables often collapses to zero height before decode).
+    final screenW = MediaQuery.sizeOf(context).width;
+    final imageW = (screenW - 32) > 0 ? screenW - 32 : screenW;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _ScheduleImageCard(
+          child: Image.asset(
+            'imgs/sched.png',
+            width: imageW,
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.topCenter,
+            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+              if (wasSynchronouslyLoaded || frame != null) return child;
+              return SizedBox(
+                width: imageW,
+                height: imageW * 0.75,
+                child: const Center(
+                  child: SizedBox(
+                    width: 28,
+                    height: 28,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              );
+            },
+            errorBuilder: (_, __, ___) => Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                'تعذر تحميل صورة الجدول',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey.shade600),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('سيتم حفظ الجدول قريباً')),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _navy,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              textDirection: TextDirection.rtl,
+              children: [
+                const Text(
+                  'حفظ',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Image.asset(
+                  'imgs/download.png',
+                  width: 22,
+                  height: 22,
+                  errorBuilder: (_, __, ___) => const Icon(
+                    Icons.download_rounded,
+                    size: 22,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Framed schedule image — solid border avoids CustomPaint / web engine edge cases.
+class _ScheduleImageCard extends StatelessWidget {
+  const _ScheduleImageCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF8E8E93), width: 1.2),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: child,
+    );
+  }
+}
+
+class _ExamsSchedulePlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
       alignment: Alignment.center,
       child: Text(
-        'سيتم عرض الجدول الدراسي هنا',
+        'سيتم عرض جدول الامتحانات هنا',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 14,

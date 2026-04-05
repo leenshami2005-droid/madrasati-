@@ -3,12 +3,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
-  final Function(int) onTap;
 
   const CustomBottomNavBar({
     super.key,
     required this.currentIndex,
-    required this.onTap,
   });
 
   @override
@@ -46,7 +44,28 @@ class CustomBottomNavBar extends StatelessWidget {
             children: List.generate(5, (index) => _NavItem(
               iconPath: icons[index],
               isActive: currentIndex == index,
-              onTap: () => onTap(index),
+              onTap: (){
+
+switch (index) {
+  case 0:
+    Navigator.pushReplacementNamed(context, 'homepage');
+    break;
+  case 1:
+    Navigator.pushReplacementNamed(context, 'services');
+    break;
+  case 2:
+    Navigator.pushReplacementNamed(context, 'registration');
+    break;
+  case 3:
+    Navigator.pushReplacementNamed(context, 'mychild');
+    break;
+  case 4:
+    Navigator.pushReplacementNamed(context, 'registration');
+    break;
+}
+
+
+              }
             )),
           ),
         ),
@@ -82,7 +101,7 @@ class _NavItem extends StatelessWidget {
               height: 34,
               colorFilter: isActive
                   ? const ColorFilter.mode(Color(0xFF2A3F6F), BlendMode.srcIn)
-                  : const ColorFilter.mode(Color(0xffC1C1C1), BlendMode.srcIn),
+                : const ColorFilter.mode(Color(0xffC1C1C1), BlendMode.srcIn),
             ),
           ],
         ),

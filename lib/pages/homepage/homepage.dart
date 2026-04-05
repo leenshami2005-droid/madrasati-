@@ -253,25 +253,6 @@ CollectionReference student =FirebaseFirestore.instance.collection("students");
         
           bottomNavigationBar: CustomBottomNavBar(
             currentIndex: 0, // الرئيسية
-            onTap: (index) {
-              switch (index) {
-                case 0:
-                  Navigator.pushReplacementNamed(context, 'homepage');
-                  break;
-                case 1:
-                  Navigator.pushReplacementNamed(context, 'findschool');
-                  break;
-                case 2:
-                  Navigator.pushReplacementNamed(context, 'registration');
-                  break;
-                case 3:
-                  Navigator.pushReplacementNamed(context, 'mychild');
-                  break;
-                case 4:
-                  Navigator.pushReplacementNamed(context, 'welcome');
-                  break;
-              }
-            },
           ),
         );
       }

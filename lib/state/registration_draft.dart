@@ -11,7 +11,6 @@ class RegistrationDraft {
   bool? transferred;
   bool? specialNeeds;
 
-  /// Step 3 — اسم المدرسة وعنوانها (القيم المعتمدة للعرض)
   static const String defaultSchoolName = 'school1';
   static const String defaultSchoolAddress = 'المدرسه القريبه';
 
