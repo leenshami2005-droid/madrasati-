@@ -133,7 +133,7 @@ class _Registrationstep2State extends State<Registrationstep2> {
                     children: [
                       const Text(
                         'مستندات الزامية',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'GraphikArabic'),
                       ),
                       const SizedBox(height: 18),
                       Container(
@@ -168,7 +168,7 @@ class _Registrationstep2State extends State<Registrationstep2> {
                       gap(height: 24),
                       const Text(
                         'مستندات غير إلزامية',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'GraphikArabic'),
                       ),
                       const SizedBox(height: 18),
                       Container(
@@ -196,8 +196,8 @@ class _Registrationstep2State extends State<Registrationstep2> {
                         style: TextStyle(
                           fontSize: 14,
                           color: const Color(0xff2A3F6F),
-                          fontWeight: FontWeight.w100,
-                          fontFamily: "font2",
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "GraphikArabic",
                         ),
                       ),
                       const Divider(),
@@ -206,8 +206,8 @@ class _Registrationstep2State extends State<Registrationstep2> {
                         style: TextStyle(
                           fontSize: 12,
                           color: const Color(0xff888888),
-                          fontWeight: FontWeight.w100,
-                          fontFamily: "font2",
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "GraphikArabic",
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -233,7 +233,7 @@ class _Registrationstep2State extends State<Registrationstep2> {
           ),
         ),
         bottomNavigationBar: CustomBottomNavBar(
-          currentIndex: 2, // step2 tab
+          currentIndex: 1, // step2 tab
         ),
       ),
     );
@@ -257,7 +257,7 @@ class _Registrationstep2State extends State<Registrationstep2> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 15)),
+                Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, fontFamily: 'GraphikArabic')),
                 if (uploaded) ...[
                   const SizedBox(height: 4),
                   Text(

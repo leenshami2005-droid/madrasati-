@@ -7,6 +7,7 @@ class Student {
     this.schoolName,
     this.primaryTeacher,
     this.parentName,
+    this.parentId,
     this.absenccepermonth,
     this.totabsence,
     this.late,
@@ -21,6 +22,7 @@ class Student {
   String? schoolName;
   String? primaryTeacher;
   String? parentName;
+  String? parentId;
   int? absenccepermonth;
   int? totabsence;
   int? late;
@@ -62,6 +64,9 @@ class Student {
       parentName: str(json['parentName']) ??
           str(json['guardianName']) ??
           str(json['parent_name']),
+      parentId: str(json['parentId']) ??
+          str(json['parentid']) ??
+          str(json['parent_id']),
       absenccepermonth: toInt(json['absense-month'] ?? json['absence-month']),
       attendance: toInt(json['attendance']),
       late: toInt(json['late']),

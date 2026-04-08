@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:madrasati_plus/models/students.dart';
 import 'package:madrasati_plus/pages/navigationbar.dart';
@@ -12,10 +13,22 @@ class _StudentUiRow {
 }
 
 String? _parentIdFromFirestoreMap(Map<String, dynamic> data) {
-  final p = data['parentid'] ?? data['parentId'];
+  final p = data['parentid'] ?? data['parentId'] ?? data['parent_id'];
   if (p == null) return null;
   final s = p.toString().trim();
   return s.isEmpty ? null : s;
+}
+
+String? _currentParentId() {
+  final email = FirebaseAuth.instance.currentUser?.email;
+  if (email == null || !email.contains('@')) return null;
+  return email.split('@').first.trim();
+}
+
+bool _matchesParentId(String? parentId, Map<String, dynamic> data) {
+  if (parentId == null) return false;
+  final docParent = _parentIdFromFirestoreMap(data);
+  return docParent != null && docParent == parentId;
 }
 
 /// "ابني" — teacher notes & student snapshot; student card from Firestore `students`.
@@ -101,13 +114,30 @@ class _MyChildPageState extends State<MyChildPage> {
                 );
               }
 
-              final rows = docs.map((d) {
+              final parentId = _currentParentId();
+              final rows = docs
+                  .where((d) => _matchesParentId(parentId, d.data()))
+                  .map((d) {
                 final data = d.data();
                 return _StudentUiRow(
                   student: Student.fromJson(data),
                   parentIdForUi: _parentIdFromFirestoreMap(data),
                 );
               }).toList();
+
+              if (rows.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(
+                      parentId == null
+                          ? 'يرجى تسجيل الدخول بحساب ولي أمر صالح'
+                          : 'لا توجد بيانات أطفال لهذا الحساب',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              }
 
               var index = _selectedStudentIndex;
               if (index >= rows.length) index = 0;
@@ -157,7 +187,7 @@ class _MyChildPageState extends State<MyChildPage> {
           ),
         ),
         bottomNavigationBar: CustomBottomNavBar(
-          currentIndex: 3,
+          currentIndex: 2,
         ),
       ),
     );
@@ -177,12 +207,10 @@ class _TopBar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onSelectStudent;
 
-  static String _guardianLabel(Student s) {
-    final p = s.parentName?.trim();
-    if (p != null && p.isNotEmpty) return p;
+  static String _childLabel(Student s) {
     final n = s.name?.trim();
     if (n != null && n.isNotEmpty) return n;
-    return 'ولي الأمر';
+    return 'طفل';
   }
 
   @override
@@ -222,7 +250,7 @@ class _TopBar extends StatelessWidget {
                   for (var i = 0; i < students.length; i++)
                     DropdownMenuItem(
                       value: i,
-                      child: Text(_guardianLabel(students[i])),
+                      child: Text(_childLabel(students[i])),
                     ),
                 ],
                 onChanged: (i) {
@@ -518,7 +546,8 @@ class _SectionTitle extends StatelessWidget {
         title,
         style: const TextStyle(
           fontSize: 15,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'GraphikArabic',
           color: Color(0xFF333333),
         ),
       ),
@@ -734,7 +763,8 @@ class _SchedulePlaceholder extends StatelessWidget {
                   'حفظ',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'GraphikArabic',
                   ),
                 ),
                 const SizedBox(width: 10),

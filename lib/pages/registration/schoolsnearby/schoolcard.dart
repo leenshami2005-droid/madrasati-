@@ -67,7 +67,8 @@ class Schoolslistcard extends StatelessWidget {
                             school.title,
                             style: const TextStyle(
                               fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'GraphikArabic',
                               color: Colors.black,
                               height: 1.25,
                             ),

@@ -25,12 +25,12 @@ class WelcomeScreen extends StatelessWidget {
                 const Spacer(flex: 3),
                 const Text(
                   "مقعدك",
-                  style: TextStyle(fontSize: 70, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 70, fontWeight: FontWeight.w600, fontFamily: 'GraphikArabic'),
                 ),
                 const Text(
                   "لأن وقتك أهم من أي طابور",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18, color: Colors.black87),
+                  style: TextStyle(fontSize: 18, color: Colors.black87, fontWeight: FontWeight.w600, fontFamily: 'GraphikArabic'),
                 ),
                 const Spacer(flex: 2),
                 ElevatedButton(
@@ -43,7 +43,7 @@ class WelcomeScreen extends StatelessWidget {
                     minimumSize: const Size(double.infinity, 55),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text("تسجيل دخول", style: TextStyle(color: Colors.white, fontSize: 18)),
+                  child: const Text("تسجيل دخول", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'GraphikArabic')),
                 ),
                 const SizedBox(height: 15),
                 // Create Account Button
@@ -55,7 +55,7 @@ class WelcomeScreen extends StatelessWidget {
                     minimumSize: const Size(double.infinity, 55),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text("انشاء حساب", style: TextStyle(color: Colors.white, fontSize: 18)),
+                  child: const Text("انشاء حساب", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'GraphikArabic')),
                 ),
                 const SizedBox(height: 20),
                 const Text("أو", style: TextStyle(color: Colors.grey)),
@@ -69,7 +69,7 @@ class WelcomeScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Center(
-                    child: Text("تسجيل دخول مع إسناد", style: TextStyle(color: Colors.white, fontSize: 16)),
+                    child: const Text("تسجيل دخول مع إسناد", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'GraphikArabic')),
                   ),
                 ),
                 const Spacer(),

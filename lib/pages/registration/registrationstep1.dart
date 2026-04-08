@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:madrasati_plus/colors.dart';
 import 'package:madrasati_plus/helper/gap.dart';
 import 'package:madrasati_plus/pages/registration/progressbar.dart';
 import 'package:madrasati_plus/pages/registration/registration_header.dart';
@@ -41,13 +40,17 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
 
     InputDecoration _fieldDecoration(String hint) => InputDecoration(
           hintText: hint,
-          hintStyle:  TextStyle(color: Colors.grey, fontSize: 15,fontWeight: FontWeight.w200),
+          hintStyle: const TextStyle(color: Colors.grey, fontSize: 15, fontWeight: FontWeight.w500),
           contentPadding:
               const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
           enabledBorder: InputBorder.none,
-          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: blue)),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFF233B72)),
+            borderRadius: BorderRadius.zero,
+          ),
           filled: true,
           fillColor: Colors.white,
+          border: InputBorder.none,
         );
 
     return Directionality(
@@ -70,15 +73,24 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('بيانات الطفل',
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          'بيانات الطفل',
                           style: TextStyle(
-                              fontSize: 18,fontWeight:FontWeight.w400)),
-                      const SizedBox(height: 18),
-
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'GraphikArabic',
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(11),
-                          border: BoxBorder.all(color:grayBorder, width: 1)
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: grayBorder),
                         ),
                         child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,11 +99,23 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text("الاسم", style: TextStyle(fontWeight:FontWeight.w400),),
+                                Text(
+                                  "الاسم",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
                                 Container(
                                   width: 300,
                                   child: TextField(
                                     controller: nameController,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'GraphikArabic',
+                                    ),
                                     decoration: _fieldDecoration('أدخل الاسم'),
                                     textAlign: TextAlign.left,
                                   ),
@@ -105,12 +129,24 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
 
                               children: [
-                                Text("الرقم الوطني", style: TextStyle(fontWeight:FontWeight.w400)),
+                                Text(
+                                  "الرقم الوطني",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
                                 Container(
                                   width: 300,
                                   child: TextField(
                                     controller: idController,
                                     keyboardType: TextInputType.number,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'GraphikArabic',
+                                    ),
                                     decoration: _fieldDecoration('أدخل الرقم الوطني'),
                                     textAlign: TextAlign.left,
                                   ),
@@ -124,36 +160,42 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                             Row(
                               children: [
                                 gap(width: 20,),
-                                Text("تاريخ الميلاد", style: TextStyle(fontWeight:FontWeight.w400)),
+                                const Text(
+                                  "تاريخ الميلاد",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
                                 gap(width: 27,),
                                 Container(
-                                  
-                                  
                                   width: 300,
                                   child: InkWell(
                                     onTap: () => _selectDate(context),
                                     child: InputDecorator(
-                                      decoration: _fieldDecoration(''),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            birthDate == null
-                                                ? ''
-                                                : '${birthDate!.day}/${birthDate!.month}/${birthDate!.year}',
-                                            textAlign: TextAlign.right,
-                                            style: const TextStyle(fontSize: 15),
-                                          ),  
-
-                                        ],
+                                      decoration: _fieldDecoration('اختر التاريخ'),
+                                      child: Text(
+                                        birthDate == null
+                                            ? ''
+                                            : '${birthDate!.day}/${birthDate!.month}/${birthDate!.year}',
+                                        textAlign: TextAlign.right,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'GraphikArabic',
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),   Icon(Icons.arrow_drop_down ,color: Color.fromARGB(255, 64, 63, 63),),
-
+                                ),
+                                const Icon(
+                                  Icons.arrow_drop_down,
+                                  color: Color(0xFF40403F),
+                                  size: 24,
+                                ),
                               ],
                             ),
-
-
 
 
 
@@ -166,7 +208,15 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
 
                               children: [
                                 gap(width: 20,),
-                                Text("الجنس",textAlign: TextAlign.right,style: TextStyle(fontWeight:FontWeight.w400)),
+                                const Text(
+                                  "الجنس",
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
                                 gap(width: 80,),
                                 Container(
                                   alignment: Alignment.topLeft,
@@ -175,7 +225,6 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                                     initialValue: gender,
                                     alignment: Alignment.centerLeft,
                                     decoration: InputDecoration(
-                                      
                                       enabledBorder: InputBorder.none,
                                       focusedBorder: InputBorder.none),
                                     
@@ -194,7 +243,14 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                             Row(
                               children: [
                                 gap(width: 20,),
-                                Text("الصف", style: TextStyle(fontWeight:FontWeight.w400)),
+                                const Text(
+                                  "الصف",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
                                 gap(width: 59,),
                                 Container(
                                   width: 340,
@@ -231,16 +287,15 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
 
                       const SizedBox(height: 24),
 
-
-
                       Container(
                         decoration: BoxDecoration(
-                          border: BoxBorder.all(color: grayBorder ,width: 1),
-                          borderRadius: BorderRadius.circular(11)
+                          border: Border.all(color: grayBorder, width: 1),
+                          borderRadius: BorderRadius.circular(11),
                         ),
                         child: Column(
                           children: [
                             Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               child: _buildChoiceBox(
                                 'هل تم نقل الطفل من مدرسة أخرى؟',
                                 [('لا، طالب جديد', false), ('نعم، منقول', true)],
@@ -249,15 +304,18 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                               ),
                             ),
                             const SizedBox(height: 14),
-                            
-                            _buildChoiceBox(
-                              'هل لدى الطفل احتياجات خاصة؟',
-                              [
-                                ('لا توجد احتياجات خاصة', false),
-                                ('نعم، لديه احتياجات خاصة', true)
-                              ],
-                              specialNeeds,
-                              (v) => setState(() => specialNeeds = v),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+
+                              child: _buildChoiceBox(
+                                'هل لدى الطفل احتياجات خاصة؟',
+                                [
+                                  ('لا توجد احتياجات خاصة', false),
+                                  ('نعم، لديه احتياجات خاصة', true)
+                                ],
+                                specialNeeds,
+                                (v) => setState(() => specialNeeds = v),
+                              ),
                             ),
                           ],
                         ),
@@ -289,7 +347,7 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
           ),
         ),
         bottomNavigationBar: CustomBottomNavBar(
-          currentIndex: 2, // التسجيل
+          currentIndex: 1, // التسجيل
         ),
       ),
     );
@@ -297,51 +355,66 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
 
   Widget _buildChoiceBox(String title, List<(String, bool)> options,
       bool selected, Function(bool) onSelect) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title),
-          const SizedBox(height: 6),
-          Container(
-            decoration: BoxDecoration(
-                          color:Color(0x80D9D9D9) ,
-
-              borderRadius: BorderRadius.circular(11)
-            ),
-            child: Row(
-              children: options.map((opt) {
-                final (label, value) = opt;
-                final active = selected == value;
-                return Expanded(
-                  child: GestureDetector(
-                    onTap: () => onSelect(value),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                      decoration: BoxDecoration(
-                        boxShadow:[BoxShadow(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+            fontFamily: 'GraphikArabic',
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: const Color(0x80D9D9D9),
+            borderRadius: BorderRadius.circular(11),
+          ),
+          padding: const EdgeInsets.all(2),
+          child: Row(
+            children: options.map((opt) {
+              final (label, value) = opt;
+              final active = selected == value;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => onSelect(value),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
                           color: active ? Colors.black.withOpacity(.7) : Colors.transparent,
-                          blurRadius: 2.5,  
-                     spreadRadius: 0, 
-        offset: const Offset(0, 2),
-                        )] ,
-                        color: active ? Colors.white : Colors.transparent,
-                        borderRadius: BorderRadius.circular(6),
+                          blurRadius: 2.5,
+                          spreadRadius: 0,
+                          offset: const Offset(0, 2),
+                        )
+                      ],
+                      color: active ? Colors.white : Colors.transparent,
+                      borderRadius: BorderRadius.circular(11),
+                    ),
+                    child: Center(
+                      child: Text(
+                        label,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                          fontFamily: 'GraphikArabic',
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      child: Center(child: Text(label)),
                     ),
                   ),
-                );
-              }).toList(),
-            ),
+                ),
+              );
+            }).toList(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

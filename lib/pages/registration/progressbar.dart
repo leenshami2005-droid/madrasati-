@@ -70,7 +70,8 @@ class RegistrationProgressBar extends StatelessWidget {
                                   style: TextStyle(
                                     color: isCurrent ? Colors.white : inactiveText,
                                     fontSize: 20,
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'GraphikArabic',
                                   ),
                                 ),
                         ),
@@ -142,7 +143,8 @@ class RegistrationProgressBar extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       color: isActive ? blue : Colors.black,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'GraphikArabic',
                     ),
                   ),
                 );

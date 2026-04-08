@@ -70,7 +70,8 @@ class Confirm extends StatelessWidget {
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'GraphikArabic',
                                 ),
                               ),
                               const SizedBox(height: 6),
@@ -109,7 +110,8 @@ class Confirm extends StatelessWidget {
                         style: TextStyle(
                           color: Color(0xFF2A3F6F),
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'GraphikArabic',
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -148,7 +150,8 @@ class Confirm extends StatelessWidget {
                         style: TextStyle(
                           color: Color(0xFF2A3F6F),
                           fontSize: 16,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'GraphikArabic',
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -180,7 +183,8 @@ class Confirm extends StatelessWidget {
                         'بمجرد الإرسال لا يمكن تعديل المدرسة المختارة. تأكد من صحة جميع البيانات قبل المتابعة.',
                         
                         style: TextStyle(
-                          fontFamily: "font2",
+                          fontFamily: "GraphikArabic",
+                          fontWeight: FontWeight.w500,
                           color: blue,
                           fontSize: 13,
                           height: 1.6,
@@ -189,7 +193,8 @@ class Confirm extends StatelessWidget {
                       Divider(color: grayBorder,),
                       Text("سيتم إرسال إشعار بحالة الطلب إلى رقم الجوال المسجل.",
                                               style: TextStyle(
-                          fontFamily: "font2",
+                          fontFamily: "GraphikArabic",
+                          fontWeight: FontWeight.w500,
                           color: Colors.black.withOpacity(0.75),
                           fontSize: 13,
                           height: 1.6,
@@ -217,7 +222,7 @@ class Confirm extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(currentIndex: 2, 
+      bottomNavigationBar: CustomBottomNavBar(currentIndex: 1, 
       ),
     );
   }
@@ -296,7 +301,8 @@ class _FilePill extends StatelessWidget {
                   subtitle,
                   style: const TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'GraphikArabic',
                     color: Colors.black87,
                   ),
                 ),

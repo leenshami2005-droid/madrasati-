@@ -11,6 +11,7 @@ import 'package:madrasati_plus/pages/services/services.dart';
 import 'package:madrasati_plus/pages/signup2.dart';
 import 'package:madrasati_plus/pages/welcome.dart';
 import 'package:madrasati_plus/pages/my_child/my_child_page.dart';
+import 'package:madrasati_plus/pages/my_account/my_account_page.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -27,7 +28,26 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(fontFamily: "font1"),
+      theme: ThemeData(
+        fontFamily: "GraphikArabic",
+        textTheme: const TextTheme(
+          bodySmall: TextStyle(fontWeight: FontWeight.w500),
+          bodyMedium: TextStyle(fontWeight: FontWeight.w500),
+          bodyLarge: TextStyle(fontWeight: FontWeight.w500),
+          labelSmall: TextStyle(fontWeight: FontWeight.w500),
+          labelMedium: TextStyle(fontWeight: FontWeight.w500),
+          labelLarge: TextStyle(fontWeight: FontWeight.w500),
+          displaySmall: TextStyle(fontWeight: FontWeight.w500),
+          displayMedium: TextStyle(fontWeight: FontWeight.w500),
+          displayLarge: TextStyle(fontWeight: FontWeight.w500),
+          headlineSmall: TextStyle(fontWeight: FontWeight.w500),
+          headlineMedium: TextStyle(fontWeight: FontWeight.w500),
+          headlineLarge: TextStyle(fontWeight: FontWeight.w500),
+          titleSmall: TextStyle(fontWeight: FontWeight.w500),
+          titleMedium: TextStyle(fontWeight: FontWeight.w500),
+          titleLarge: TextStyle(fontWeight: FontWeight.w500),
+        ),
+      ),
       debugShowCheckedModeBanner: false,
 
       routes: {
@@ -42,9 +62,10 @@ class Home extends StatelessWidget {
         "step5" : (context) => RegistrationStep5(),
         "mychild": (context) => const MyChildPage(),
         "services": (context) => const ServicesPage(),
+        "myaccount": (context) => const MyAccountPage(),
       },
 
-      initialRoute: "homepage",
+      initialRoute: "login",
     );
   }
 }

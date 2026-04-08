@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:madrasati_plus/helper/snackbar.dart';
-import 'package:madrasati_plus/pages/navigationbar.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+const String _kAuthEmailDomain = 'myapp.internal';
+
+String _shadowEmail(String raw) {
+  final t = raw.trim();
+  if (t.isEmpty) return t;
+  return '$t@$_kAuthEmailDomain';
+}
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -11,144 +21,360 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-
-  String email = '';
+  String idNumber = '';
+  String phoneNumber = '';
   String password = '';
   String confirmPassword = '';
   bool isLoading = false;
-  String? emailError;
+  String? idError;
   String? passwordError;
   String? confirmPasswordError;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
+    const navy = Color(0xFF2E4B82);
+    final mq = MediaQuery.of(context);
+    final screenH = mq.size.height;
+    final topImageH = screenH * 0.4;
+    final sheetH = screenH * 0.68;
+
+    final borderColor = Colors.grey.shade300;
+    final fieldDecoration = InputDecoration(
+      hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 15),
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(11),
+        borderSide: BorderSide(color: borderColor, width: 1),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(11),
+        borderSide: BorderSide(color: borderColor, width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: navy, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(11),
+        borderSide: const BorderSide(color: Colors.red, width: 1),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.red, width: 1.5),
+      ),
+    );
+
+    Widget formContent() {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Background Pattern
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: Opacity(opacity: 0.8, child: Image.asset('assets/imgs/chairs.png', fit: BoxFit.cover)),
-          ),
-          // Form Container
           Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.75,
-              padding: const EdgeInsets.all(30),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const Text("إنشاء حساب", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 25),
-                    CustomTextField(
-                      hint: "الرقم الوطني أو البريد الإلكتروني",
-                      errorText: emailError,
-                      onChanged: (value) {
-                        email = value;
-                        if (emailError != null) {
-                          setState(() {
-                            emailError = null;
-                          });
-                        }
-                      },
+            alignment: Alignment.centerRight,
+            child: Material(
+              color: navy,
+              borderRadius: BorderRadius.circular(11),
+              child: InkWell(
+                onTap: () {
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  } else {
+                    Navigator.of(context).pushReplacementNamed('welcome');
+                  }
+                },
+                borderRadius: BorderRadius.circular(11),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                  child: Text(
+                    'رجوع',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: 12),
-                    CustomTextField(
-                      hint: "كلمة المرور",
-                      obscureText: true,
-                      errorText: passwordError,
-                      onChanged: (value) {
-                        password = value;
-                        if (passwordError != null) {
-                          setState(() {
-                            passwordError = null;
-                          });
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    CustomTextField(
-                      hint: "تأكيد كلمة المرور",
-                      obscureText: true,
-                      errorText: confirmPasswordError,
-                      onChanged: (value) {
-                        confirmPassword = value;
-                        if (confirmPasswordError != null) {
-                          setState(() {
-                            confirmPasswordError = null;
-                          });
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 30),
-                    ElevatedButton(
-                      onPressed: isLoading ? null : () => _handleSignup(context),
-                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2E4B82), minimumSize: const Size(double.infinity, 50)),
-                      child: isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                            )
-                          : const Text("إنشاء حساب", style: TextStyle(color: Colors.white)),
-                    ),
-                    const SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("لديك حساب بالفعل؟ "),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text(
-                            "تسجيل الدخول",
-                            style: TextStyle(color: Color(0xFF2E4B82), fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
-          const Positioned(
-            top: 80,
-            left: 0,
-            right: 0,
-            child: Center(child: Text("مقعدك", style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold))),
+          const SizedBox(height: 20),
+          const Text(
+            'إنشاء حساب',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF111111),
+            ),
           ),
+          const SizedBox(height: 35),
+          TextField(
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(10),
+            ],
+            textAlign: TextAlign.right,
+            onChanged: (value) {
+              idNumber = value;
+              setState(() {
+                if (value.isEmpty) {
+                  idError = null;
+                } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                  idError = 'الرجاء إدخال الرقم الوطني مكوناً من 10 أرقام';
+                } else {
+                  idError = null;
+                }
+              });
+            },
+            decoration: fieldDecoration.copyWith(
+              hintText: 'الرقم الوطني',
+              errorText: idError,
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            keyboardType: TextInputType.phone,
+            textAlign: TextAlign.right,
+            onChanged: (value) {
+              phoneNumber = value;
+            },
+            decoration: fieldDecoration.copyWith(
+              hintText: 'رقم الهاتف',
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            textAlign: TextAlign.right,
+            obscureText: true,
+            onChanged: (value) {
+              password = value;
+              if (passwordError != null) {
+                setState(() {
+                  passwordError = null;
+                });
+              }
+            },
+            decoration: fieldDecoration.copyWith(
+              hintText: 'كلمة المرور',
+              errorText: passwordError,
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            textAlign: TextAlign.right,
+            obscureText: true,
+            onChanged: (value) {
+              confirmPassword = value;
+              if (confirmPasswordError != null) {
+                setState(() {
+                  confirmPasswordError = null;
+                });
+              }
+            },
+            decoration: fieldDecoration.copyWith(
+              hintText: 'تأكيد كلمة المرور',
+              errorText: confirmPasswordError,
+            ),
+          ),
+          const SizedBox(height: 30),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 11),
+            child: ElevatedButton(
+              onPressed: isLoading ? null : () => _handleSignup(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: navy,
+                disabledBackgroundColor: navy.withValues(alpha: 0.6),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                minimumSize: const Size(double.infinity, 50),
+              ),
+              child: isLoading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Text(
+                      'إنشاء حساب',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'GraphikArabic',
+                      ),
+                    ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(child: Divider(color: borderColor, thickness: 1)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'أو',
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+                ),
+              ),
+              Expanded(child: Divider(color: borderColor, thickness: 1)),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 11),
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: navy,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                minimumSize: const Size(double.infinity, 50),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                textDirection: TextDirection.rtl,
+                children: [
+                                  SvgPicture.asset(
+                    'assets/imgs/sanad_logo.svg',
+                                      height: 24,
+                    width: 24,
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.verified_user_rounded,
+                      color: Color(0xFF4CAF50),
+                      size: 24,
+                    ),
+
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    'إنشاء حساب مع سند',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'GraphikArabic',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+           SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+               Text('لديك حساب بالفعل؟ ', style: TextStyle(fontSize: 14)),
+              GestureDetector(
+                onTap: () => Navigator.pushReplacementNamed(context, 'login'),
+                child:  Text(
+                  'تسجيل الدخول',
+                  style: TextStyle(
+                    color: Color(0xFF2E4B82),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: mq.padding.bottom + 24),
         ],
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 4, // الملف الشخصي
-        
+      );
+    }
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: topImageH,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Opacity(
+                    opacity: 0.8,
+                    child: Image.asset(
+                      'assets/imgs/chairs.png',
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                      errorBuilder: (_, __, ___) =>
+                          const ColoredBox(color: Color(0xFFF0F0F5)),
+                    ),
+                  ),
+                  Positioned(
+                    top: 10,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        width: 407.85,
+                        child: SvgPicture.asset(
+                          'assets/imgs/maqaddaklogo.svg',
+                          height: 210,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: sheetH,
+                padding: const EdgeInsets.fromLTRB(30, 28, 30, 0),
+                decoration: const BoxDecoration(
+                  boxShadow: [BoxShadow(color: Colors.black, blurRadius: 12)],
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(63),
+                    topLeft: Radius.circular(63),
+                  ),
+                ),
+                child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  child: formContent(),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Future<void> _handleSignup(BuildContext context) async {
     setState(() {
-      emailError = null;
+      idError = null;
       passwordError = null;
       confirmPasswordError = null;
     });
 
     bool hasErrors = false;
 
-    if (email.isEmpty) {
+    if (idNumber.isEmpty) {
       setState(() {
-        emailError = "الرجاء إدخال البريد الإلكتروني";
+        idError = "الرجاء إدخال الرقم الوطني";
+      });
+      hasErrors = true;
+    } else if (!RegExp(r'^\d{10}$').hasMatch(idNumber)) {
+      setState(() {
+        idError = "الرجاء إدخال الرقم الوطني مكوناً من 10 أرقام";
       });
       hasErrors = true;
     }
@@ -181,19 +407,30 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     try {
-      UserCredential user = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
+      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _shadowEmail(idNumber),
         password: password,
       );
-setState(() {
-          isLoading = false;
-        });
-       
+
+      final uid = userCredential.user?.uid;
+      if (uid != null) {
+        await FirebaseFirestore.instance.collection('users').doc(uid).set(
+          {
+            'idNumber': idNumber.trim(),
+            'phoneNumber': phoneNumber.trim(),
+          },
+          SetOptions(merge: true),
+        );
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+
+      if (context.mounted) {
         sSnackbar.show(context, text: "تم إنشاء الحساب بنجاح");
-         Navigator.pushNamed(context, "homepage");
-         
-        
-      
+        Navigator.pushNamed(context, "homepage");
+      }
     } on FirebaseAuthException catch (e) {
       String errorMessage = "حدث خطأ";
 
@@ -204,78 +441,29 @@ setState(() {
         errorMessage = "كلمة المرور ضعيفة جداً";
       } else if (e.code == 'email-already-in-use') {
         setState(() {
-          emailError = "البريد الإلكتروني مستخدم بالفعل";
+          idError = "الرقم الوطني مستخدم بالفعل";
         });
-        errorMessage = "البريد الإلكتروني مستخدم بالفعل";
+        errorMessage = "الرقم الوطني مستخدم بالفعل";
       } else if (e.code == 'invalid-email') {
         setState(() {
-          emailError = "البريد الإلكتروني غير صحيح";
+          idError = "الرقم الوطني غير صحيح";
         });
-        errorMessage = "البريد الإلكتروني غير صحيح";
+        errorMessage = "الرقم الوطني غير صحيح";
       }
       setState(() {
-          isLoading = false;
-        });
+        isLoading = false;
+      });
 
-      sSnackbar.show(context, text: errorMessage);
+      if (context.mounted) {
+        sSnackbar.show(context, text: errorMessage);
+      }
     } catch (e) {
-      sSnackbar.show(context, text: "حدث خطأ غير متوقع");
-    } 
+      setState(() {
+        isLoading = false;
+      });
+      if (context.mounted) {
+        sSnackbar.show(context, text: "حدث خطأ غير متوقع");
+      }
     }
-    
-  }
-
-
-class CustomTextField extends StatelessWidget {
-  final String hint;
-  final bool obscureText;
-  final Function(String)? onChanged;
-  final String? errorText;
-
-  const CustomTextField({
-    super.key,
-    required this.hint,
-    this.obscureText = false,
-    this.onChanged,
-    this.errorText,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      textAlign: TextAlign.right,
-      obscureText: obscureText,
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        hintText: hint,
-        errorText: errorText,
-        filled: true,
-        fillColor: const Color(0xFFF5F5F5),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: errorText != null
-              ? const BorderSide(color: Colors.red, width: 1)
-              : BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: errorText != null
-              ? const BorderSide(color: Colors.red, width: 2)
-              : const BorderSide(color: Color(0xFF2E4B82), width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.red, width: 1),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-        ),
-      ),
-    );
   }
 }

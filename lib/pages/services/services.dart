@@ -65,6 +65,7 @@ class ServicesPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    fontFamily: 'GraphikArabic',
                   ),
                 ),
                 gap(height: 12),
@@ -75,6 +76,7 @@ class ServicesPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    fontFamily: 'GraphikArabic',
                   ),
                 ),
                 gap(height: 12),
@@ -86,7 +88,7 @@ class ServicesPage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: const CustomBottomNavBar(
-        currentIndex: 1, // services icon (see navigationbar.dart switch)
+        currentIndex: 3, 
       ),
     );
   }

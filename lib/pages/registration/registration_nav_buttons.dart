@@ -33,7 +33,8 @@ class RegistrationNavButtons extends StatelessWidget {
     );
     const textStyle = TextStyle(
       fontSize: 16,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w600,
+      fontFamily: 'GraphikArabic',
       color: Colors.white,
     );
 

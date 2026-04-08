@@ -108,7 +108,8 @@ class RegistrationStep5 extends StatelessWidget {
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 14,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'GraphikArabic',
                             ),
                           ),
                           SizedBox(height: 8),
@@ -188,7 +189,8 @@ class RegistrationStep5 extends StatelessWidget {
 "سيتم إرسال إشعار بحالة الطلب إلى رقم الجوال المسجل في الحساب."  ,
                   textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontFamily: "font2",
+                      fontFamily: "GraphikArabic",
+                      fontWeight: FontWeight.w500,
                       fontSize: 13,
                       color: Colors.black.withOpacity(0.35),
                       height: 1.6,
@@ -216,7 +218,7 @@ class RegistrationStep5 extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: 2
+        currentIndex: 1
         
       ),
     );
@@ -250,17 +252,19 @@ class _StatusRow extends StatelessWidget {
                 title,
                 style: const TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'GraphikArabic',
                   color: Colors.black87,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 subtitle,
-                style: TextStyle(
-                  fontWeight: FontWeight.w300,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'GraphikArabic',
                   fontSize: 12,
-                  color: Colors.black.withOpacity(0.45),
+                  color: Colors.black,
                 ),
               ),
             ],

@@ -13,9 +13,9 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<String> icons = [
       'assets/imgs/navigation/home.svg',
-      'assets/imgs/navigation/services.svg',
       'assets/imgs/navigation/tasjeel.svg',
       'assets/imgs/navigation/ebni.svg',
+      'assets/imgs/navigation/services.svg',
       'assets/imgs/navigation/profile.svg',
     ];
 
@@ -51,16 +51,16 @@ switch (index) {
     Navigator.pushReplacementNamed(context, 'homepage');
     break;
   case 1:
-    Navigator.pushReplacementNamed(context, 'services');
+    Navigator.pushReplacementNamed(context, 'registration');
     break;
   case 2:
-    Navigator.pushReplacementNamed(context, 'registration');
-    break;
-  case 3:
     Navigator.pushReplacementNamed(context, 'mychild');
     break;
+  case 3:
+    Navigator.pushReplacementNamed(context, 'services');
+    break;
   case 4:
-    Navigator.pushReplacementNamed(context, 'registration');
+    Navigator.pushReplacementNamed(context, 'myaccount');
     break;
 }
 

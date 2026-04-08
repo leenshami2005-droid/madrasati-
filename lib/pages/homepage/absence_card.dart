@@ -13,7 +13,7 @@ class absencecard extends StatelessWidget {
                          children: [
                            Text(text, textAlign: TextAlign.right,style: TextStyle(color: Color(0xffC1C1C1),fontSize: 12),),
                            gap(height: 10,),
-                           Text("${number}",style: TextStyle(fontWeight: FontWeight.w700 ,color: Color(0xff2A3F6F),fontSize: 22),)
+                           Text("${number}",style: TextStyle(fontWeight: FontWeight.w600, fontFamily: 'GraphikArabic', color: Color(0xff2A3F6F),fontSize: 22),)
                            
                          ],
                        )))
