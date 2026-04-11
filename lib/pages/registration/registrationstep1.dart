@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:madrasati_plus/helper/gap.dart';
 import 'package:madrasati_plus/pages/registration/progressbar.dart';
 import 'package:madrasati_plus/pages/registration/registration_header.dart';
 import 'package:madrasati_plus/pages/registration/registration_nav_buttons.dart';
@@ -97,7 +96,7 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                           children: [
                             const SizedBox(height: 6),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   "الاسم",
@@ -107,8 +106,8 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                Container(
-                                  width: 300,
+                                const SizedBox(width: 12),
+                                Expanded(
                                   child: TextField(
                                     controller: nameController,
                                     style: const TextStyle(
@@ -126,8 +125,7 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                             Divider(height: 2,),
 
                             Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   "الرقم الوطني",
@@ -137,8 +135,8 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                Container(
-                                  width: 300,
+                                const SizedBox(width: 12),
+                                Expanded(
                                   child: TextField(
                                     controller: idController,
                                     keyboardType: TextInputType.number,
@@ -158,8 +156,8 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
 
                             
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                gap(width: 20,),
                                 const Text(
                                   "تاريخ الميلاد",
                                   style: TextStyle(
@@ -168,9 +166,8 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                gap(width: 27,),
-                                Container(
-                                  width: 300,
+                                const SizedBox(width: 12),
+                                Expanded(
                                   child: InkWell(
                                     onTap: () => _selectDate(context),
                                     child: InputDecorator(
@@ -180,6 +177,7 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                                             ? ''
                                             : '${birthDate!.day}/${birthDate!.month}/${birthDate!.year}',
                                         textAlign: TextAlign.right,
+                                        overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
@@ -205,9 +203,8 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                             Divider(height: 2),
                             
                             Row(
-
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                gap(width: 20,),
                                 const Text(
                                   "الجنس",
                                   textAlign: TextAlign.right,
@@ -217,17 +214,16 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                gap(width: 80,),
-                                Container(
-                                  alignment: Alignment.topLeft,
-                                  width: 300,
+                                const SizedBox(width: 12),
+                                Expanded(
                                   child: DropdownButtonFormField<String>(
                                     initialValue: gender,
+                                    isExpanded: true,
                                     alignment: Alignment.centerLeft,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       enabledBorder: InputBorder.none,
-                                      focusedBorder: InputBorder.none),
-                                    
+                                      focusedBorder: InputBorder.none,
+                                    ),
                                     items: const [
                                       DropdownMenuItem(value: 'ذكر', child: Text('ذكر')),
                                       DropdownMenuItem(value: 'أنثى', child: Text('أنثى')),
@@ -241,8 +237,8 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
 
                             
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                gap(width: 20,),
                                 const Text(
                                   "الصف",
                                   style: TextStyle(
@@ -251,13 +247,11 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                gap(width: 59,),
-                                Container(
-                                  width: 340,
+                                const SizedBox(width: 12),
+                                Expanded(
                                   child: DropdownButtonFormField<String>(
                                     initialValue: grade,
                                     isExpanded: true,
-
                                     decoration: _fieldDecoration(' '),
                                     items: const [
                                       DropdownMenuItem(value: 'الأول', child: Text('الأول')),
@@ -272,8 +266,6 @@ class _RegisterStep1PageState extends State<RegisterStep1Page> {
                                       DropdownMenuItem(value: 'العاشر', child: Text('العاشر')),
                                       DropdownMenuItem(value: 'الاول ثانوي', child: Text('الاول ثانوي')),
                                       DropdownMenuItem(value: 'الثاني ثنوي', child: Text('الثاني ثنوي')),
-                                  
-                                  
                                     ],
                                     onChanged: (v) => setState(() => grade = v),
                                   ),

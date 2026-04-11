@@ -225,22 +225,32 @@ class _HomePageState extends State<HomePage> {
                         
                       ),
                     GridView.count(
-                      childAspectRatio: 2,
+                      // Wider than tall (was 2:1) so each stat card has enough height.
+                      childAspectRatio: 1.4,
                       mainAxisSpacing: 20,
                       crossAxisSpacing: 50,
                       crossAxisCount: 2,
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    children: [
-                  absencecard(text: "اجمالي الغيابات ", number: totalAbsence)    ,  
-                  absencecard(text: "غيابات الشهر", number: monthAbsence)    ,           
-                  absencecard(text: "ايام الحضور", number: attendance)    ,           
-                  absencecard(text: " ايام التأخير", number: late)    ,           
-                  
-                    ],
-                    
-                    )
-                    ,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      children: [
+                        absencecard(
+                          text: "اجمالي الغيابات ",
+                          number: totalAbsence,
+                        ),
+                        absencecard(
+                          text: "غيابات الشهر",
+                          number: monthAbsence,
+                        ),
+                        absencecard(
+                          text: "ايام الحضور",
+                          number: attendance,
+                        ),
+                        absencecard(
+                          text: " ايام التأخير",
+                          number: late,
+                        ),
+                      ],
+                    ),
                       Divider(
                         color:Color(0xffC1C1C1) ,
                         thickness: 1,
