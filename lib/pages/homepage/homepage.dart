@@ -63,45 +63,26 @@ class _HomePageState extends State<HomePage> {
           );
         }
 
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Scaffold(
-            backgroundColor: Colors.white,
-            body: Center(child: Text('لا توجد بيانات للطالب حتى الآن')),
-          );
-        }
-
         final parentId = _currentParentId();
-        final studentDocs = snapshot.data!.docs
-            .where((doc) => _matchesParent(parentId, doc.data() as Map<String, dynamic>))
+        final allDocs = snapshot.data?.docs ?? const <QueryDocumentSnapshot>[];
+        final studentDocs = allDocs
+            .where((doc) =>
+                _matchesParent(parentId, doc.data() as Map<String, dynamic>))
             .toList();
 
-        if (studentDocs.isEmpty) {
-          return Scaffold(
-            backgroundColor: Colors.white,
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  parentId == null
-                      ? 'يرجى تسجيل الدخول بحساب ولي أمر صالح'
-                      : 'لا يوجد أطفال مرتبطة بهذا الحساب',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          );
-        }
+        final hasChildren = studentDocs.isNotEmpty;
 
         if (_selectedChildIndex >= studentDocs.length) {
           _selectedChildIndex = 0;
         }
 
-        final doc = studentDocs[_selectedChildIndex];
-        final studentName = doc["name"];
-        final totalAbsence = doc["totabsence"];
-        final monthAbsence = doc["absense-month"];
-        final attendance = doc["attendance"];
-        final late = doc["late"];
+        final doc = hasChildren ? studentDocs[_selectedChildIndex] : null;
+        final studentName =
+            hasChildren ? (doc!["name"]?.toString() ?? '') : '';
+        final totalAbsence = hasChildren ? (doc!["totabsence"] ?? 0) : 0;
+        final monthAbsence = hasChildren ? (doc!["absense-month"] ?? 0) : 0;
+        final attendance = hasChildren ? (doc!["attendance"] ?? 0) : 0;
+        final late = hasChildren ? (doc!["late"] ?? 0) : 0;
         return Scaffold(
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
@@ -122,15 +103,16 @@ class _HomePageState extends State<HomePage> {
                           gap(width: 150,),
                           Row(
                             children: [
-                              Text(
-                                studentName,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                              if (hasChildren)
+                                Text(
+                                  studentName,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                  textDirection: TextDirection.rtl,
                                 ),
-                                textDirection: TextDirection.rtl,
-                              ),
                               Text(
                                 "مرحبا بك ",
                                 textAlign: TextAlign.right,
@@ -179,29 +161,45 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<int>(
-                                value: _selectedChildIndex.clamp(0, studentDocs.length - 1),
+                                value: hasChildren
+                                    ? _selectedChildIndex.clamp(0, studentDocs.length - 1)
+                                    : null,
                                 isDense: true,
                                 icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
-                                items: [
-                                  for (var i = 0; i < studentDocs.length; i++)
-                                    DropdownMenuItem(
-                                      value: i,
-                                      child: Text(
-                                        studentDocs[i]["name"]?.toString() ?? 'طفل ${i + 1}',
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    setState(() {
-                                      _selectedChildIndex = value;
-                                    });
-                                  }
-                                },
+                                hint: Text(
+                                  parentId == null
+                                      ? 'يرجى تسجيل الدخول'
+                                      : 'لا يوجد أطفال',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                items: hasChildren
+                                    ? [
+                                        for (var i = 0; i < studentDocs.length; i++)
+                                          DropdownMenuItem(
+                                            value: i,
+                                            child: Text(
+                                              studentDocs[i]["name"]?.toString() ??
+                                                  'طفل ${i + 1}',
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                      ]
+                                    : const [],
+                                onChanged: hasChildren
+                                    ? (value) {
+                                        if (value != null) {
+                                          setState(() {
+                                            _selectedChildIndex = value;
+                                          });
+                                        }
+                                      }
+                                    : null,
                               ),
                             ),
                           ),
@@ -223,6 +221,22 @@ class _HomePageState extends State<HomePage> {
                         thickness: 1,
                         height: 15,
                         
+                      ),
+                    if (!hasChildren)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            'لا يوجد أطفال مرتبطة بهذا الحساب',
+                            textDirection: TextDirection.rtl,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
                       ),
                     GridView.count(
                       // Wider than tall (was 2:1) so each stat card has enough height.
