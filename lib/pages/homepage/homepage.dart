@@ -289,7 +289,7 @@ class _HomePageState extends State<HomePage> {
 
                   ),
                   padding: EdgeInsets.all(10),
-                  height: 122,
+                  constraints: const BoxConstraints(minHeight: 122),
                   margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,7 +343,7 @@ class _HomePageState extends State<HomePage> {
 
                   ),
                   padding: EdgeInsets.all(10),
-                  height: 122,
+                  constraints: const BoxConstraints(minHeight: 122),
                   margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
